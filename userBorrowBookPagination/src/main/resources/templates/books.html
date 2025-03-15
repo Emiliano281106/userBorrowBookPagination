@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+
+<h1>Error Occurred</h1>
+<p th:text="${error}">Error message here</p>
+<a href="/books/page/1">Return to Book List</a>
+
+<div class="w3-container">
+    <div class="w3-bar">
+        <a href="/" class="w3-button w3-blue">Home</a>
+        <a th:href="@{/page/1}" class="w3-button w3-green">Books List</a>
+    </div>
+    <h1>Spring Boot Books Example</h1>
+    <h5>Showing [[${currentPage}]] of [[${totalPages}]] pages</h5>
+</div>
+
+<div class="w3-container">
+    <!-- books table -->
+    <table class="w3-table-all w3-hoverable" >
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>author</th>
+            <th>pagesQty</th>
+            <th>available</th>
+            <th>publicationData</th>
+            <th>isbn</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${listBooks}">
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.pagesQty}"></td>
+            <td th:text="${book.available} ? 'Yes' : 'No'"></td> <!-- boolean -->
+            <td th:text="${#temporals.format(book.publicationDate, 'dd MMM yyyy')}"></td>
+            <td th:text="${book.isbn}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+    <!-- pagination books from controller PAGE and PaginationAndSortindCrud -->
+    <div th:if="${totalPages > 1}">
+            <!-- qty total books -->
+            <div>
+                Total Rows: [[${totalItems}]]
+            </div>
+            <!-- render all LINKS TO Controller -->
+            <!-- we wil not render the LINK of the page we are -->
+            <div>
+                <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i}}">[[${i}]]</a>
+                <span th:unless="${currentPage != i}">[[${i}]]</span>&nbsp;
+                </span>
+            </div>
+           <!-- link to PREVIOUS PAGE -->
+           <div>
+                <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage - 1}}">Previous</a>
+                <span th:unless="${currentPage < totalPages}">Previous</span>
+           </div>
+           <!-- link to NEXT PAGE -->
+            <div>
+                <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}}">Next</a>
+                <span th:unless="${currentPage < totalPages}">Next</span>
+            </div>
+            <!-- link to LAST PAGE -->
+            <div>
+                <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages}}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
+            <!-- link to FIRST PAGE -->
+            <div>
+                <a th:href="@{'/page/' + 1}">First Page</a>
+            </div>
+    </div>
+</div>
+
+</body>
+</html>
